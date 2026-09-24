@@ -5,17 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CentiDevs | Portfolio</title>
   <style>
-    /* 
-      Theme Colors - You can tweak the hex codes here 
-      if you want a brighter gold or a different dark shade
-    */
     :root {
-      --bg-color: #0a0a0a;
-      --panel-bg: #141414;
+      /* Deep space black to dark gold gradient */
+      --bg-top: #050505;
+      --bg-bottom: #1a1600;
+      
       --gold: #d4af37;
-      --gold-glow: rgba(212, 175, 55, 0.35);
+      --gold-glow: rgba(212, 175, 55, 0.4);
+      --gold-light: #f9df8a;
+      
       --text-main: #f2f2f2;
-      --text-muted: #999999;
+      --text-muted: #a3a3a3;
     }
 
     body, html {
@@ -23,155 +23,256 @@
       padding: 0;
       height: 100%;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg-color);
+      background: radial-gradient(ellipse at bottom, var(--bg-bottom) 0%, var(--bg-top) 100%);
       color: var(--text-main);
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden; /* Prevents scrolling while popup is open */
+      overflow: hidden;
     }
 
-    /* Background styling with a subtle radial gradient */
-    .background {
+    /* The canvas layer for the stars */
+    #starfield {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
       z-index: 1;
+      pointer-events: none; /* Lets you click things under the canvas */
     }
 
-    /* Dimmed blur overlay behind the popup */
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(8px);
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.6s ease;
-      z-index: 5;
-    }
-
-    .overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    /* The Popup Panel */
-    .popup {
+    /* Entry animation wrapper */
+    .popup-container {
       position: relative;
       z-index: 10;
-      background-color: var(--panel-bg);
-      width: 85%;
-      max-width: 420px;
-      padding: 40px 30px;
-      border-radius: 12px;
-      border: 1px solid rgba(212, 175, 55, 0.15);
-      
-      /* Uses an inner shadow to create a subtle gold edge glow */
-      box-shadow: 0 15px 35px rgba(0,0,0,0.9), inset 0 0 20px var(--gold-glow);
-      text-align: center;
-      
-      /* Starts hidden and pushed down slightly */
       opacity: 0;
-      transform: translateY(50px) scale(0.95);
-      transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateY(60px) scale(0.9);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      width: 90%;
+      max-width: 450px;
     }
 
-    /* Triggers the slide-up and fade-in */
-    .popup.active {
+    .popup-container.active {
       opacity: 1;
       transform: translateY(0) scale(1);
     }
 
+    /* The upgraded Glassmorphism Panel */
+    .popup {
+      background: rgba(15, 15, 15, 0.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 50px 40px;
+      border-radius: 16px;
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 25px rgba(212, 175, 55, 0.15);
+      text-align: center;
+      
+      /* Continuous floating animation */
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+      100% { transform: translateY(0px); }
+    }
+
+    /* Upgraded Typography */
     .popup h1 {
-      color: var(--gold);
-      margin-top: 0;
-      font-size: 26px;
-      letter-spacing: 1.5px;
+      margin: 0 0 5px 0;
+      font-size: 32px;
+      letter-spacing: 2px;
       text-transform: uppercase;
-      text-shadow: 0 0 10px var(--gold-glow);
+      /* Gold gradient text */
+      background: linear-gradient(to right, var(--gold), var(--gold-light), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0px 0px 8px var(--gold-glow));
+    }
+
+    .popup h2 {
+      margin: 0;
+      font-size: 12px;
+      color: var(--gold);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      opacity: 0.8;
     }
 
     .divider {
-      width: 60px;
-      height: 2px;
+      width: 50px;
+      height: 3px;
       background: var(--gold);
-      margin: 20px auto;
-      box-shadow: 0 0 8px var(--gold-glow);
+      margin: 25px auto;
+      border-radius: 2px;
+      box-shadow: 0 0 10px var(--gold-glow);
     }
 
     .popup p {
       color: var(--text-muted);
-      line-height: 1.6;
-      margin-bottom: 30px;
+      line-height: 1.7;
+      margin-bottom: 35px;
       font-size: 15px;
     }
 
-    /* Animated Gold Button */
+    /* Upgraded Button */
     .btn-enter {
-      background: transparent;
+      background: rgba(212, 175, 55, 0.1);
       color: var(--gold);
-      border: 2px solid var(--gold);
-      padding: 12px 30px;
-      font-size: 14px;
+      border: 1px solid var(--gold);
+      padding: 14px 36px;
+      font-size: 13px;
       font-weight: bold;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       transition: all 0.3s ease;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
     }
 
     .btn-enter:hover {
       background: var(--gold);
-      color: var(--bg-color);
-      box-shadow: 0 0 20px var(--gold-glow);
-      transform: translateY(-2px);
+      color: #000;
+      box-shadow: 0 0 25px var(--gold-glow);
+      transform: scale(1.05);
     }
   </style>
 </head>
 <body>
 
-  <!-- The main website background -->
-  <div class="background"></div>
-  
-  <!-- The dark blur behind the popup -->
-  <div class="overlay" id="overlay"></div>
+  <!-- Interactive Space Canvas -->
+  <canvas id="starfield"></canvas>
 
-  <!-- The Popup Box -->
-  <div class="popup" id="popup">
-    <h1>Welcome to CentiDevs</h1>
-    <div class="divider"></div>
-    
-    <!-- Edit this paragraph to change your info -->
-    <p>This is your customizable information panel. You can easily edit this text in the HTML to show off your latest UI commissions, development portfolio, or current game updates.</p>
-    
-    <button class="btn-enter" onclick="closePopup()">Enter Site</button>
+  <!-- Popup Wrapper for structural animations -->
+  <div class="popup-container" id="popup-container">
+    <div class="popup">
+      <h1>CentiDevs</h1>
+      <h2>UI Design & Development</h2>
+      <div class="divider"></div>
+      
+      <p>Welcome to my portfolio. This space is dedicated to high-quality user interfaces, scripting, and custom development projects.</p>
+      
+      <button class="btn-enter" onclick="enterSite()">Enter Site</button>
+    </div>
   </div>
 
   <script>
-    // Triggers the animation 400ms after the webpage loads
+    // --- POPUP ANIMATION LOGIC ---
     window.onload = () => {
       setTimeout(() => {
-        document.getElementById('overlay').classList.add('active');
-        document.getElementById('popup').classList.add('active');
-      }, 400); 
+        document.getElementById('popup-container').classList.add('active');
+      }, 300); 
     };
 
-    // Fades the popup out when the button is clicked
-    function closePopup() {
-      document.getElementById('overlay').classList.remove('active');
-      document.getElementById('popup').classList.remove('active');
-      
-      // Optional: Add a line here to let the user scroll the page again
-      document.body.style.overflow = 'auto';
+    function enterSite() {
+      const container = document.getElementById('popup-container');
+      container.style.opacity = '0';
+      container.style.transform = 'translateY(-30px) scale(0.95)';
+      setTimeout(() => {
+        container.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        // Add your redirect or page transition logic here
+      }, 800);
     }
+
+    // --- INTERACTIVE STARFIELD LOGIC ---
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+    
+    let width, height;
+    let stars = [];
+    
+    // Mouse tracking for parallax
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetMouseX = 0;
+    let targetMouseY = 0;
+
+    function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      initStars();
+    }
+
+    // Creates the star objects
+    function initStars() {
+      stars = [];
+      // Calculate amount of stars based on screen size (keeps it looking good on mobile and PC)
+      const numStars = Math.floor((width * height) / 4000); 
+      
+      for(let i = 0; i < numStars; i++) {
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 1.5 + 0.5, // Size of the star
+          speed: Math.random() * 0.5 + 0.1, // Normal drifting speed
+          opacity: Math.random(),
+          // Some stars are gold, most are white
+          color: Math.random() > 0.85 ? '#d4af37' : '#ffffff' 
+        });
+      }
+    }
+
+    // Track mouse movement
+    window.addEventListener('mousemove', (e) => {
+      // Get mouse position relative to the center of the screen
+      targetMouseX = (e.clientX - width / 2) * 0.05;
+      targetMouseY = (e.clientY - height / 2) * 0.05;
+    });
+
+    // Handle screen resizing
+    window.addEventListener('resize', resize);
+
+    function animate() {
+      // Clear the canvas for the next frame
+      ctx.clearRect(0, 0, width, height);
+      
+      // Smooth out the mouse movement (easing)
+      mouseX += (targetMouseX - mouseX) * 0.1;
+      mouseY += (targetMouseY - mouseY) * 0.1;
+
+      stars.forEach(star => {
+        // Draw the star
+        ctx.globalAlpha = star.opacity;
+        ctx.fillStyle = star.color;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Move the star (drift + mouse parallax)
+        // Bigger stars (closer) move faster with the mouse
+        star.y -= star.speed; 
+        let parallaxX = mouseX * star.radius;
+        let parallaxY = mouseY * star.radius;
+
+        star.x -= parallaxX * 0.05;
+        star.y -= parallaxY * 0.05;
+
+        // Twinkle effect
+        star.opacity += (Math.random() - 0.5) * 0.05;
+        if (star.opacity < 0.1) star.opacity = 0.1;
+        if (star.opacity > 1) star.opacity = 1;
+
+        // Reset star to bottom if it floats off screen
+        if(star.y < 0) {
+          star.y = height;
+          star.x = Math.random() * width;
+        }
+        if(star.x < 0) star.x = width;
+        if(star.x > width) star.x = 0;
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    // Initialize and start animation
+    resize();
+    animate();
   </script>
 </body>
 </html>
