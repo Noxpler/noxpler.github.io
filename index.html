@@ -2,10 +2,176 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>My GitHub Site</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CentiDevs | Portfolio</title>
+  <style>
+    /* 
+      Theme Colors - You can tweak the hex codes here 
+      if you want a brighter gold or a different dark shade
+    */
+    :root {
+      --bg-color: #0a0a0a;
+      --panel-bg: #141414;
+      --gold: #d4af37;
+      --gold-glow: rgba(212, 175, 55, 0.35);
+      --text-main: #f2f2f2;
+      --text-muted: #999999;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden; /* Prevents scrolling while popup is open */
+    }
+
+    /* Background styling with a subtle radial gradient */
+    .background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+      z-index: 1;
+    }
+
+    /* Dimmed blur overlay behind the popup */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.6s ease;
+      z-index: 5;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* The Popup Panel */
+    .popup {
+      position: relative;
+      z-index: 10;
+      background-color: var(--panel-bg);
+      width: 85%;
+      max-width: 420px;
+      padding: 40px 30px;
+      border-radius: 12px;
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      
+      /* Uses an inner shadow to create a subtle gold edge glow */
+      box-shadow: 0 15px 35px rgba(0,0,0,0.9), inset 0 0 20px var(--gold-glow);
+      text-align: center;
+      
+      /* Starts hidden and pushed down slightly */
+      opacity: 0;
+      transform: translateY(50px) scale(0.95);
+      transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Triggers the slide-up and fade-in */
+    .popup.active {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .popup h1 {
+      color: var(--gold);
+      margin-top: 0;
+      font-size: 26px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px var(--gold-glow);
+    }
+
+    .divider {
+      width: 60px;
+      height: 2px;
+      background: var(--gold);
+      margin: 20px auto;
+      box-shadow: 0 0 8px var(--gold-glow);
+    }
+
+    .popup p {
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 30px;
+      font-size: 15px;
+    }
+
+    /* Animated Gold Button */
+    .btn-enter {
+      background: transparent;
+      color: var(--gold);
+      border: 2px solid var(--gold);
+      padding: 12px 30px;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .btn-enter:hover {
+      background: var(--gold);
+      color: var(--bg-color);
+      box-shadow: 0 0 20px var(--gold-glow);
+      transform: translateY(-2px);
+    }
+  </style>
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <p>My site is live on GitHub Pages.</p>
+
+  <!-- The main website background -->
+  <div class="background"></div>
+  
+  <!-- The dark blur behind the popup -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- The Popup Box -->
+  <div class="popup" id="popup">
+    <h1>Welcome to CentiDevs</h1>
+    <div class="divider"></div>
+    
+    <!-- Edit this paragraph to change your info -->
+    <p>This is your customizable information panel. You can easily edit this text in the HTML to show off your latest UI commissions, development portfolio, or current game updates.</p>
+    
+    <button class="btn-enter" onclick="closePopup()">Enter Site</button>
+  </div>
+
+  <script>
+    // Triggers the animation 400ms after the webpage loads
+    window.onload = () => {
+      setTimeout(() => {
+        document.getElementById('overlay').classList.add('active');
+        document.getElementById('popup').classList.add('active');
+      }, 400); 
+    };
+
+    // Fades the popup out when the button is clicked
+    function closePopup() {
+      document.getElementById('overlay').classList.remove('active');
+      document.getElementById('popup').classList.remove('active');
+      
+      // Optional: Add a line here to let the user scroll the page again
+      document.body.style.overflow = 'auto';
+    }
+  </script>
 </body>
 </html>
